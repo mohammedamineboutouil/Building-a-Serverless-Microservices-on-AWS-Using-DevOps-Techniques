@@ -1,0 +1,28 @@
+{
+  "ErrorDocument": {
+    "Key": "index.html"
+  },
+  "IndexDocument": {
+    "Suffix": "index.html"
+  },
+  "RoutingRules": [
+    {
+      "Condition": {
+        "KeyPrefixEquals": "workspace/",
+        "HttpErrorCodeReturnedEquals": "404"
+      },
+      "Redirect": {
+        "ReplaceKeyPrefixWith": "workspace#"
+      }
+    },
+    {
+      "Condition": {
+        "KeyPrefixEquals": "workspace/",
+        "HttpErrorCodeReturnedEquals": "403"
+      },
+      "Redirect": {
+        "ReplaceKeyPrefixWith": "workspace#"
+      }
+    }
+  ]
+}

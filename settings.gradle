@@ -1,0 +1,3 @@
+rootProject.name = 'serverless-microservices-on-aws'
+
+include 'micro-service'

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -e
+
+export TASK_NAME=$1
+export SERVICE_NAME=$2
+export CLUSTER_NAME=$3
+export REGION=$4
+
+# Get task definition name
+TASK_DEFINITION_NAME=$(aws ecs list-task-definitions | grep "$TASK_NAME" | awk -F: '{ print $6 }' | awk -F "/" '{ print $2 }')
+
+# Get desired count
+DESIRED_COUNT=$(aws ecs describe-services --cluster "$CLUSTER_NAME" --services "$SERVICE_NAME" | grep desiredCount | tail -n 1 | awk -F ": " '{ print $2 }' | sed 's/,//')
+
+# Push the new task to the service itself
+aws ecs update-service \
+  --cluster "$CLUSTER" \
+  --service "$SERVICE_NAME" \
+  --task-definition "$TASK_DEFINITION_NAME" \
+  --desired-count "$DESIRED_COUNT" \
+  --region "$REGION" \
+  --force-new-deployment
+
+# Wait until the specified service running on the specified cluster is stable
+aws ecs wait services-stable \
+  --cluster "$CLUSTER" \
+  --service "$SERVICE_NAME"

@@ -1,0 +1,23 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+jib {
+    from {
+        image = "${baseImage}"
+    }
+    to {
+        image = "${repositoryUri}:${version}"
+        credHelper = 'ecr-login'
+    }
+    container {
+        creationTime = "USE_CURRENT_TIMESTAMP"
+        jvmFlags = ['-server', '-Xtune:virtualized', '-XX:+UseContainerSupport',
+                    '-XX:MaxRAMPercentage=80', '-Duser.timezone=UTC',
+                    '-Djava.security.egd=file:/dev/./urandom'
+        ]
+    }
+}

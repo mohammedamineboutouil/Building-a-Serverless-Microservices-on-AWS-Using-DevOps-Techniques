@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+export REPO_NAME=$1
+
+REPO_URI=$(aws ecr describe-repositories --repository-names "${REPO_NAME}" --query "repositories[0].repositoryUri" --output text 2>/dev/null || \
+           aws ecr create-repository --repository-name "${REPO_NAME}"  --query "repository.repositoryUri" --output text)
+
+echo "$REPO_URI"
